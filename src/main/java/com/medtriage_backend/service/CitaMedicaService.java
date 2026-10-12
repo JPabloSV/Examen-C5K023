@@ -2,10 +2,12 @@ package com.medtriage_backend.service;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.medtriage_backend.dto.CitaMedicaDTO;
 import com.medtriage_backend.dto.CrearCitaDTO;
+import com.medtriage_backend.exception.GeneralException;
 import com.medtriage_backend.model.CitaMedica;
 import com.medtriage_backend.model.Doctor;
 import com.medtriage_backend.model.Paciente;
@@ -33,7 +35,7 @@ public class CitaMedicaService {
 
 	public CitaMedicaDTO buscarPorId(Long id) {
 		CitaMedica cita = citaMedicaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+				.orElseThrow(() -> new GeneralException("Cita no encontrada", HttpStatus.NOT_FOUND));
 		return convertirADTO(cita);
 	}
 
@@ -46,7 +48,7 @@ public class CitaMedicaService {
 
 	public CitaMedicaDTO actualizar(Long id, CrearCitaDTO datos) {
 		CitaMedica cita = citaMedicaRepository.findById(id)
-				.orElseThrow(() -> new RuntimeException("Cita no encontrada"));
+				.orElseThrow(() -> new GeneralException("Cita no encontrada", HttpStatus.NOT_FOUND));
 		copiarDatos(cita, datos);
 		return convertirADTO(citaMedicaRepository.save(cita));
 	}
@@ -57,9 +59,9 @@ public class CitaMedicaService {
 
 	private void copiarDatos(CitaMedica cita, CrearCitaDTO datos) {
 		Doctor doctor = doctorRepository.findById(datos.getDoctorId())
-				.orElseThrow(() -> new RuntimeException("Doctor no encontrado"));
+				.orElseThrow(() -> new GeneralException("Doctor no encontrado", HttpStatus.NOT_FOUND));
 		Paciente paciente = pacienteRepository.findById(datos.getPacienteId())
-				.orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+				.orElseThrow(() -> new GeneralException("Paciente no encontrado", HttpStatus.NOT_FOUND));
 
 		cita.setCodigoCita(datos.getCodigoCita());
 		cita.setDoctor(doctor);
