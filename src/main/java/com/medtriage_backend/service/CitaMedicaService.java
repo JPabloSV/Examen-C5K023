@@ -33,6 +33,11 @@ public class CitaMedicaService {
 		return citaMedicaRepository.findAll().stream().map(this::convertirADTO).toList();
 	}
 
+	public List<CitaMedicaDTO> listarPorPrioridad(String prioridad) {
+		return citaMedicaRepository.findByNivelPrioridad(prioridad)
+				.stream().map(this::convertirADTO).toList();
+	}
+
 	public CitaMedicaDTO buscarPorId(Long id) {
 		CitaMedica cita = citaMedicaRepository.findById(id)
 				.orElseThrow(() -> new GeneralException("Cita no encontrada", HttpStatus.NOT_FOUND));
@@ -42,6 +47,7 @@ public class CitaMedicaService {
 	public CitaMedicaDTO crear(CrearCitaDTO datos) {
 		CitaMedica cita = new CitaMedica();
 		copiarDatos(cita, datos);
+		cita.setCodigoCita("CIT-" + System.currentTimeMillis());
 		cita.setEstado("PENDIENTE");
 		return convertirADTO(citaMedicaRepository.save(cita));
 	}
@@ -63,7 +69,6 @@ public class CitaMedicaService {
 		Paciente paciente = pacienteRepository.findById(datos.getPacienteId())
 				.orElseThrow(() -> new GeneralException("Paciente no encontrado", HttpStatus.NOT_FOUND));
 
-		cita.setCodigoCita(datos.getCodigoCita());
 		cita.setDoctor(doctor);
 		cita.setPaciente(paciente);
 		cita.setNivelPrioridad(datos.getNivelPrioridad());

@@ -3,6 +3,7 @@ package com.medtriage_backend.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,7 @@ import com.medtriage_backend.service.CitaMedicaService;
 
 @RestController
 @RequestMapping("/api/citas")
+@CrossOrigin(origins = "http://localhost:4200")
 public class CitaMedicaController {
 
     private final CitaMedicaService citaMedicaService;
@@ -34,6 +36,11 @@ public class CitaMedicaController {
     @GetMapping("/{id}")
     public CitaMedicaDTO buscarPorId(@PathVariable Long id) {
         return citaMedicaService.buscarPorId(id);
+    }
+
+    @GetMapping("/prioridad/{prioridad}")
+    public List<CitaMedicaDTO> listarPorPrioridad(@PathVariable String prioridad) {
+        return citaMedicaService.listarPorPrioridad(prioridad);
     }
 
     @PostMapping
